@@ -11,11 +11,17 @@ public class Deck{
     private List<Card> deck;
     String[] colors = {"Yellow", "Red", "Blue", "Green"};
 
+
+
+
     //constructor
     public Deck() {
         this.deck = new ArrayList<>();
         initDeck();
     }
+
+
+
 
     // in Total we have 96 cards 
     // number 0 : one for each color 
@@ -25,7 +31,7 @@ public class Deck{
 
 
     public void initDeck() {
-    // First: Colored Cards From 0 to 9
+    //Colored Cards From 0 to 9
     for (int i = 0; i <= 9; i++) {
     this.deck.add(new Card(Integer.toString(i), "Yellow","simple"));
     this.deck.add(new Card(Integer.toString(i), "Red","simple"));
@@ -33,7 +39,7 @@ public class Deck{
     this.deck.add(new Card(Integer.toString(i), "Green", "simple"));
     }
 
-
+    // because 0 should only be one per color we start from one again (1-9 x2 per color)
     for (int i = 1; i <= 9; i++) {
     this.deck.add(new Card(Integer.toString(i), "Yellow","simple"));
     this.deck.add(new Card(Integer.toString(i), "Red","simple"));
