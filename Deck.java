@@ -39,7 +39,7 @@ public class Deck{
     this.deck.add(new Card(Integer.toString(i), "Green", "simple"));
     }
 
-    // because 0 should only be one per color we start from one again (1-9 x2 per color)
+    // because 0 should only be one per color we start from one (1-9 x2 per color)
     for (int i = 1; i <= 9; i++) {
     this.deck.add(new Card(Integer.toString(i), "Yellow","simple"));
     this.deck.add(new Card(Integer.toString(i), "Red","simple"));
@@ -49,7 +49,7 @@ public class Deck{
 
     // 4 cards for +4 et switch color
     for (int i = 0; i < 4; i++) {
-    this.deck.add(new Card("multi", "none","Wild"));
+    this.deck.add(new Card("multi", "none","Wild")); //change color card
     this.deck.add(new Card("+4", "none","Wild"));
 }
 
