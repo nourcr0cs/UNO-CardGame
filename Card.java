@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Card {
 
         private String value;
@@ -22,10 +24,8 @@ public class Card {
             return type;
         }
 
-
-        
-        //will use this logic later on i will just leave it here until then
-        public boolean isCompatible(Card comparator) {
+         //will use this logic later on i will just leave it here until then
+         public boolean isCompatible(Card comparator) {
             return (
               comparator.getType().equals("Wild") ||
               comparator.getColor().equals(this.color) || 
@@ -33,8 +33,32 @@ public class Card {
             );
           }
         
-    
     }
+        
+        //cards from 0-9
+        class SimpleCard extends Card {
+            public SimpleCard(String value, String color) {
+                super(value, color, "simple");
+            }
+        }
+        
+        //cards like ChangeColor and Draw four
+        class WildCard extends Card {
+            public WildCard(String value) {
+                super(value, "none", "wild");
+            }
+        }
+
+        //cards like Skip/Draw two/Reverse
+        class SpecialCard extends Card {
+            public SpecialCard(String value, String color) {
+                super(value, color, "special");
+            }
+        }
+        
+        
+    
+    
     
     
 
