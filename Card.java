@@ -21,6 +21,18 @@ public class Card {
         public String getType() {
             return type;
         }
+
+
+        
+        //will use this logic later on i will just leave it here until then
+        public boolean isCompatible(Card comparator) {
+            return (
+              comparator.getType().equals("Wild") ||
+              comparator.getColor().equals(this.color) || 
+              comparator.getValue().equals(this.value)
+            );
+          }
+        
     
     }
     

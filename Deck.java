@@ -1,8 +1,4 @@
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Deck{
@@ -64,5 +60,21 @@ public class Deck{
     }
 
   }
+
+
+  //shuffling
+  public void shuffleDeck() {
+    Collections.shuffle(deck);
+}
+
+
+    /* in case of the player needs to draw we need to reset the sum for next event
+     maybe ndiroha f player or gamePlay
+     
+    public void resetSumToDraw() {
+        //this.sumToDraw = 0;
+    }*/
+
+
 
 }
