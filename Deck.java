@@ -41,8 +41,8 @@ public class Deck{
 
     // 4 cards for +4 et switch color
     for (int i = 0; i < 4; i++) {
-    this.deck.add(new WildCard("multi")); //change color card
-    this.deck.add(new WildCard("+4"));
+    this.deck.add(new Multi()); //change color card can be put anytime 
+    this.deck.add(new PlusFour());//+4 
 }
 
 
@@ -50,27 +50,34 @@ public class Deck{
     for (int i = 0; i < 4; i++) {
       String color;
       color = colors[i];
-      this.deck.add( new SpecialCard("Skip", color) );
-      this.deck.add( new SpecialCard("Reverse", color) );
-      this.deck.add( new SpecialCard("+2", color) );
+      this.deck.add( new Reverse(color) );
+      this.deck.add( new Skip(color) );
+      this.deck.add( new PlusTwo(color) );
     }
 
   }
 
 
-  //shuffling
-  public void shuffleDeck() {
-    Collections.shuffle(deck);
-}
+  // shuffling
+    public void shuffleDeck() {
+        Collections.shuffle(deck);
+    }
+
+    public void drawingFromDeck() {
+        if (deck.isEmpty()){
+            System.out.println("empty deck");
+        } else 
+        {
+            deck.remove(deck.size() - 1);
+        }
+        }
 
 
-    /* in case of the player needs to draw we need to reset the sum for next event
-     maybe ndiroha f player or gamePlay
-     
-    public void resetSumToDraw() {
-        //this.sumToDraw = 0;
-    }*/
+    public void resetDeck() {
+            this.deck.clear(); 
+            initDeck();        
+            shuffleDeck();    
+            }
+    }    
 
 
-
-}
