@@ -15,11 +15,11 @@ public class Deck{
     }
 
 
-    // in Total we have 96 cards 
-    // number 0 : one for each color (4)
-    // number 1-9 : two for each color (2*4*9)
-    // wild cards : 4/4 (8)
-    // special cards : 3 for each color (3*4)
+    //in Total we have 96 cards 
+    //number 0 : one for each color (4)
+    //number 1-9 : two for each color (2*4*9)
+    //wild cards : 4/4 (8)
+    //special cards : 3 for each color (3*4)
 
 
     public void initDeck() {
@@ -58,19 +58,37 @@ public class Deck{
   }
 
 
-  // shuffling
     public void shuffleDeck() {
         Collections.shuffle(deck);
     }
 
-    public void drawingFromDeck() {
-        if (deck.isEmpty()){
-            System.out.println("empty deck");
-        } else 
-        {
-            deck.remove(deck.size() - 1);
+    public boolean drawCard(Deck deck) {
+        if (!deck.isEmpty()) {
+            Card card = deck.drawingFromDeck();
+            this.hand.add(card); 
+            return true; 
+        } else {
+            return false; 
         }
+    }
+
+    public Card drawingFromDeck() {
+        if (deck.isEmpty()) {
+            return null; 
+        } else {
+            return deck.remove(deck.size() - 1); 
         }
+    }
+    
+    // to check if the deck size is enough to deal cards
+    public int size() {
+        return deck.size();
+    }
+
+
+    public boolean isEmpty() {
+        return this.deck.isEmpty();
+    }
 
 
     public void resetDeck() {
