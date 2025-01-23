@@ -124,7 +124,7 @@ public class Game {
 
             for (int i = 0; i < 7; i++) {
 
-             // use the methode of drawing 1 of class deck 7 times to add 7 cards
+                // use the methode of drawing 1 of class deck 7 times to add 7 cards
                 player.addCard(deckGame.drawingFromDeck());
             }
 
@@ -183,25 +183,23 @@ public class Game {
 
     public void playCard() {
         Player currentPlayer = getcurrentplayer();
-       
-    // call the play turn to play card or draw 
-    playTurn(currentPlayer);
-       
+
+        // call the play turn to play card or draw
+        playTurn(currentPlayer);
 
         // Check if the current player has won the game
         if (checkWinner(currentPlayer)) {
             System.out.println("Congratulations! " + currentPlayer.getName() + " has won the game!");
-            System.exit(0); // game over 
+            System.exit(0); // game over
         }
 
-       // Apply the effect card after playing the card 
-       applyEffectCard(currentPlayer);
+        // Apply the effect card after playing the card
+        applyEffectCard(currentPlayer);
     }
 
     public void applyEffectCard(Player currentPlayer) {
 
         Card playedCard = getTopCard();
-
 
         // apply the effect of the played card using the effectCard method
         playedCard.effectCard(players.get((indexOfCurrentPlayer + 1) % numberPlayer), deckGame, this);
@@ -275,9 +273,9 @@ public class Game {
             System.out.println("Invalid action: Card is not in the player's hand.");
             return false;
         }
-        
+
         // Check if the card is compatible with the top card
-        if (isMoveValid(card,topCard)) {
+        if (isMoveValid(card, topCard)) {
             System.out.println("Invalid action: Card is not compatible with the top card.");
             return false;
         }
@@ -285,30 +283,34 @@ public class Game {
         return true;
     }
 
-
-    public String choseColor(){
+    public String choseColor() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Chose the new color to play  ");
-        String color=scanner.nextLine();
-         
-        while(true){
-        if(color.equalsIgnoreCase("Yellow")||color.equalsIgnoreCase("Red")||
-        color.equalsIgnoreCase("Blue")||color.equalsIgnoreCase("Green")){
-            scanner.close();
-            return color;
-        }else{
-            System.out.println("Invalid color pleas try again chose : Yellow || Red || Green || Blue ");
-        }
-   }
-}
+        String color = scanner.nextLine();
 
+        while (true) {
+            if (color.equalsIgnoreCase("Yellow") || color.equalsIgnoreCase("Red") ||
+                    color.equalsIgnoreCase("Blue") || color.equalsIgnoreCase("Green")) {
+                scanner.close();
+                return color;
+            } else {
+                System.out.println("Invalid color pleas try again chose : Yellow || Red || Green || Blue ");
+            }
+  
+        }
+    }
 
     public void drawCard(Player player) {
     }
 
     public void displayGameState(Card card) {
     }
-    
-    public boolean checkWinner(Player player){ return true;}
-    public boolean isMoveValid(Card card , Card topCard){return true ;}
+
+    public boolean checkWinner(Player player) {
+        return true;
+    }
+
+    public boolean isMoveValid(Card card, Card topCard) {
+        return true;
+    }
 }
