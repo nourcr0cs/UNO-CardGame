@@ -1,9 +1,11 @@
-import java.util.*;
+package cardGame;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class Deck{
-
-    //attrib
+public class Deck {
+	 //attrib
     private List<Card> deck;
     String[] colors = {"Yellow", "Red", "Blue", "Green"};
 
@@ -61,16 +63,17 @@ public class Deck{
     public void shuffleDeck() {
         Collections.shuffle(deck);
     }
-
-    public boolean drawCard(Deck deck,Player player) {
+  Player player = new Player(null);
+    public Card drawCard(Deck deck) {
         if (!deck.isEmpty()) {
-            Card card = deck.drawingFromDeck();
-            player.addCard(card); 
-            return true; 
+            Card card = deck.drawingFromDeck(); // Draw a card from the deck
+            player.addCard(card); // Add the card to the player's hand
+            return card; // Return the drawn card
         } else {
-            return false; 
+            return null; // Return null if the deck is empty
         }
     }
+
 
     public Card drawingFromDeck() {
         if (deck.isEmpty()) {
@@ -97,5 +100,4 @@ public class Deck{
             shuffleDeck();    
             }
     
-    
-        }  
+}
