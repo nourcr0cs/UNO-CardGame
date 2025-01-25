@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 
 public class Deck {
 	 //attrib
@@ -64,27 +65,28 @@ public class Deck {
     }
     
 
-   
-   /* public Card drawCard(Deck deck) {
-    	
-        if (!deck.isEmpty()) {
-            Card card = deck.drawingFromDeck(); // Draw a card from the deck
-            player.addCard(card); // Add the card to the player's hand
-            return card; // Return the drawn card
-        } else {
-            return null; // Return null if the deck is empty
-        }
-    }
-*/
 
-    public Card drawingFromDeck() {
-        if (deck.isEmpty()) {
-            return null; 
-        } else {
-            return deck.remove(deck.size() - 1); 
-        }
-    }
     
+    
+    public Card drawingFromDeck(Stack<Card> pileOfCards) {
+        if (deck.isEmpty()) {
+            if (pileOfCards.size() > 1) {
+                System.out.println("Reshuffling discard pile into deck...");
+                for (int i = 0; i < pileOfCards.size() - 1; i++) {
+                    deck.add(pileOfCards.get(i));
+                }
+                Card topCard = pileOfCards.peek();
+                pileOfCards.clear();
+                pileOfCards.push(topCard);
+                shuffleDeck();
+            } else {
+                // If the discard pile is empty or has only one card, reset the deck
+                System.out.println("Resetting the deck...");
+                resetDeck(); // Reset the deck by reinitializing and shuffling
+            }
+        }
+        return deck.remove(deck.size() - 1);
+    }
     // to check if the deck size is enough to deal cards
     public int size() {
         return deck.size();
@@ -101,6 +103,8 @@ public class Deck {
             initDeck();        
             shuffleDeck();    
             }
+
+
 
 
     

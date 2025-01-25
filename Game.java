@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
+//import cardGame.Bot.Human;
+
 
 
 public class Game {
@@ -11,19 +13,53 @@ public class Game {
 	 private List<Player> players;
 	    private Deck deck;
 	    private Card topCard;
-	    private Card playedCard;
+	    //private Card playedCard;
 	    private int numberPlayer11;
 	    private int indexOfCurrentPlayer = 0;
 	    private Stack<Card> pileOfGame; // Stack to represent the pile of the cards that played
-	    
+	  //  private Player player ;
 
+       
+       public  Stack<Card> getPileOfGame() {
+			return pileOfGame;
+		}
 
+		public void setPileOfGame(Stack<Card> pileOfGame) {
+			this.pileOfGame = pileOfGame;
+		}
+
+		public int getPileSize() {
+		    return pileOfGame.size();
+		}
+		public  List<Card> getPileCardsExceptTop() {
+		    if (pileOfGame.isEmpty()) {
+		        return new ArrayList<>();
+		    }
+        List<Card> cards = new ArrayList<>(pileOfGame);
+		    cards.remove(cards.size() - 1);  // Remove the top card from the list
+		    return cards;
+		}
+		public void clearPileExceptTop() {
+		    if (pileOfGame.size() > 1) {
+		        Card topCard = pileOfGame.pop(); // Remove and keep the top card
+		        pileOfGame.clear();              // Clear all cards from the pile
+		        pileOfGame.push(topCard);         // Put the top card back
+		    }
+		}
+		
 Scanner scanner = new Scanner(System.in);
 
-
+public void setTopCard(Card topCard) {
+    if (topCard == null) {
+        throw new IllegalArgumentException("Top card cannot be null!");
+    }
+    this.topCard = topCard;
+    this.pileOfGame.push(topCard);
+    System.out.println("Top card set to: " + topCard);
+}
 
 public Game() {
-
+    this.pileOfGame =  new Stack<>();
     this.deck = new Deck();
     players = new ArrayList<>();// array list to store the players
 
@@ -46,37 +82,43 @@ public void shuffleDeck() {
 
     deck.shuffleDeck();
 }
-	    
-	    public void applyEffectCard(Player currentPlayer) {
 
-	        Card playedCard = getTopCard();
+public void applyEffectCard(Player currentPlayer) {
+    Card playedCard = getTopCard(); // Get the card that was just played
 
-	        // apply the effect of the played card using the effectCard method
-	        playedCard.effectCard(players.get((indexOfCurrentPlayer + 1) % numberPlayer11), deck, this);
+    if (playedCard == null) {
+        System.out.println("No card has been played yet. Skipping effect application.");
+        return; // Exit if no card was played
+    }
 
-	        // chose the next player depending on the effect card
-	        switch (getTopCard().checkCardType()) {
-	            case 1: // Skip
-	                System.out.println("Skip effect activated.");
-	                indexOfCurrentPlayer = (indexOfCurrentPlayer + 2) % numberPlayer11; // Skip next player
-	                break;
-	            case 2: // +2
-	                System.out.println("+2 effect activated.");
-	                indexOfCurrentPlayer = (indexOfCurrentPlayer + 2) % numberPlayer11; // Skip next player
-	                break;
-	            case 3: // Wild +4
-	                System.out.println("Wild +4 effect activated.");
-	                indexOfCurrentPlayer = (indexOfCurrentPlayer + 2) % numberPlayer11; // Skip next player
-	                break;
-	            case 4: // reverse
-	                indexOfCurrentPlayer = (numberPlayer11 - 1 - indexOfCurrentPlayer) % numberPlayer11;
-	            default: // Normal play
-	                System.out.println("Simple card has been played");
-	                indexOfCurrentPlayer = (indexOfCurrentPlayer + 1) % numberPlayer11;
-	                break;
-	        }
+    // Apply the effect of the played card
+    playedCard.effectCard(currentPlayer, deck, this);
 
-	    }
+    // Determine the next player based on the card's effect
+    switch (playedCard.checkCardType()) {
+        case 1: // Skip
+            System.out.println("Skip effect activated.");
+            indexOfCurrentPlayer = (indexOfCurrentPlayer + 2) % numberPlayer11; // Skip the next player
+            break;
+        case 2: // +2
+            System.out.println("+2 effect activated.");
+            indexOfCurrentPlayer = (indexOfCurrentPlayer + 1) % numberPlayer11; // Move to the next player
+            break;
+        case 3: // Wild +4
+            System.out.println("Wild +4 effect activated.");
+            indexOfCurrentPlayer = (indexOfCurrentPlayer + 1) % numberPlayer11; // Move to the next player
+            break;
+        case 4: // Reverse
+            System.out.println("Reverse effect activated.");
+            reverseEffect(); // Reverse the direction of play
+            break;
+        default: // Normal play
+            System.out.println("No special effect activated.");
+            indexOfCurrentPlayer = (indexOfCurrentPlayer + 1) % numberPlayer11; // Move to the next player
+            break;
+    }
+}
+
 
 	    
 	    // Game Initialization
@@ -84,10 +126,9 @@ public void shuffleDeck() {
 	        players = new ArrayList<>();
 	        deck = new Deck();
 	        
-
 	        initPlayers(players);
 	        
-	       	   shuffleDeck();
+	       	  shuffleDeck();
 	        distributeCards();
 	        //dealInitialCards();
 	       // topCard = deck.drawCard(deck);
@@ -107,36 +148,29 @@ public void shuffleDeck() {
 	        }
 	        
 	       // this.topCard = this.deck.drawCard(deck);
+	        // Draw the initial top card and set it correctly
 	        
+	        this.topCard = deck.drawingFromDeck(pileOfGame);
 	        if (this.topCard == null) {
 	            throw new IllegalStateException("Deck is empty. Cannot start the game!");
 	        }
+	        pileOfGame.push(topCard);
 	        System.out.println("Deck initialized with cards: " + deck.size());
 	        System.out.println("Top card initialized: " + this.topCard);
 
 	    }
 //---------------------------------------------------------------------------------------------
-	    // Turn Management
-	   /* public void playTurn1(Player player) {
-	        displayGameState();
-	        Card playedCard = getAIAction(player);
-	        if (playedCard != null && isMoveValid(playedCard, topCard)) {
-	            player.removeCard(playedCard);
-	            topCard = playedCard;
-	            applyEffectCard(player);
-	        } else {
-	            drawCard(player);
-	        }
-	        checkWinner();
-	        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-	    }*/
-      
-	    // Gameplay Mechanics
+	  
 	    public void drawCard(Player player) {
-	        Card drawnCard = deck.drawingFromDeck();
+	        if (deck.isEmpty()) {
+	            System.out.println("Deck is empty. Skipping draw action.");
+	            return;  // Avoid crashing the game when deck is empty
+	        }
+	        Card drawnCard = deck.drawingFromDeck(pileOfGame);
 	        player.addCard(drawnCard);
+	        System.out.println(player.getName() + " drew a card: " + drawnCard);
 	    }
-
+	    
 	    public boolean isMoveValid(Card card, Card topCard) {
 	    	 if (this.topCard == null) {
 	    	        throw new IllegalStateException("Top card is not set!");
@@ -144,6 +178,7 @@ public void shuffleDeck() {
 	        return card.getColor().equals(topCard.getColor()) || 
 	               card.getValue().equals(topCard.getValue()) ||
 	               card.getColor().equals("Wild");
+	        
 	    }
 
 	  
@@ -199,15 +234,7 @@ public void shuffleDeck() {
 	        // Implement loading logic here
 	    }
 
-	    // Helper methods
-	   /* public void dealInitialCards() {
-	        for (Player player : players) {
-	            for (int i = 0; i < 7; i++) {
-	                drawCard(player);
-	            }
-	        }
-	    }*/
- 
+	
 
 //---------------------------------------------------------------------------------------
 	 
@@ -249,7 +276,7 @@ public void shuffleDeck() {
 	                    System.out.println("Enter the name of Human player " + (i + 1) + ":");
 	                    name = scanner.nextLine().trim();
 	                    if (!name.isEmpty()) {
-	                        playerList.add(new Human(name)); // Add Human player to the list
+	                        playerList.add( new Player.Human(name)); // Add Human player to the list
 	                        System.out.println("Human player '" + name + "' added successfully.");
 	                        break;
 	                    } else {
@@ -258,7 +285,7 @@ public void shuffleDeck() {
 	                } else if (type.equalsIgnoreCase("Ai")) {
 	                    // Assign a name to the AI player
 	                    name = "Bot " + aiCount++;
-	                    playerList.add(new Bot(name)); // Add AI player to the list
+	                    playerList.add(new Player.Bot(name)); // Add AI player to the list
 	                    System.out.println("AI player '" + name + "' added successfully.");
 	                    break;
 	                } else {
@@ -269,73 +296,19 @@ public void shuffleDeck() {
 
 	        // Assign the provided playerList to the game's internal list
 	        this.players = new ArrayList<>(playerList);
-
+            this.numberPlayer11=players.size();
+            
 	        System.out.println("All players have been added successfully!");
 	        System.out.println("Players information:");
 	        for (Player player : players) {
-	            System.out.println("- " + player.getName() + " (" + (player instanceof Human ? "Human" : "AI") + ")");
+	            System.out.println("- " + player.getName() + " (" + (player instanceof Player.Human ? "Human" : "AI") + ")");
 	        }
 	    }
 
 
 
-// enter the players
-/*
-public void initPlayers() {
 
-    System.out.println("enter the number of players (2-4) :");
 
-    numberPlayer11 = scanner.nextInt();
-
-    // reading the number of players
-    while (numberPlayer11 > 4 || numberPlayer11 < 2) {
-
-        System.out.println("enter the number of players (2-4) :");
-
-        numberPlayer11 = scanner.nextInt();
-    }
-
-    // read the name and type of player and we store it in array list
-
-    scanner.nextLine(); // Consume the newline character
-    int aiCount = 1; // counter for ai names
-
-    for (int i = 0; i < numberPlayer11; i++) {
-
-        String type;
-        String name;
-
-        System.out.println("enter the type of player " + (i + 1) + " (Human/Ai):");
-        type = scanner.nextLine();
-
-        while (true) {
-
-            type = scanner.nextLine();
-
-            // assign name based on the type
-            if (type.equalsIgnoreCase("Human")) {
-                // read the name until the user enter a valide choice
-                System.out.println("enter the name of the human player " + (i + 1) + ":");
-                name = scanner.nextLine();
-                this.players.add(new Human(name)); // creat a human player
-                break;
-
-            } else if (type.equalsIgnoreCase("Ai")) {
-                // for AI automatically assign a name like "Bot 1" "Bot 2"
-                name = "Bot " + aiCount++;
-                this.players.add(new Bot(name)); // creat a Ai player
-                break;
-            } else {
-                System.out.println("Invalid type. Please enter 'Human' or 'Ai'");
-            }
-        }
-
-        System.out.println("players added succefuly");
-        
-
-    }
-}
-*/
 // display the informaition of each player
 public void displayPlayers() {
 
@@ -379,7 +352,7 @@ public void distributeCards() {
         for (int i = 0; i < 7; i++) {
 
             // use the methode of drawing 1 of class deck 7 times to add 7 cards
-            player.addCard(deck.drawingFromDeck());
+            player.addCard(deck.drawingFromDeck(pileOfGame));
         }
 
     }
@@ -411,64 +384,51 @@ public Card getTopCard() {
     return pileOfGame.peek();
 }
 
+
 public void playTurn(Player player) {
-
     Card topCard = getTopCard();
-    Player currentPlayer = getcurrentplayer();
 
-  
-    displayGameState();// args : topCard
-    if (playedCard != null) {
-        topCard = playedCard;
+    // Get the player's move
+    Card cardToPlay = player.makeMove(topCard);
+
+    if (cardToPlay == null) {
+        // The player wants to draw a card
+        drawCard(player);
     } else {
-        // If no card was played, you might want to draw a new top card
-        topCard = deck.drawingFromDeck();
-        if (topCard == null) {
-            // Handle the case when the deck is empty
-            shuffleDeck();
-            topCard = deck.drawingFromDeck();
-        }
-    }
-    // Check if the current player has a playable card
-    if (!currentPlayer.hasPlayableCard(topCard)) {
-        System.out.println(currentPlayer.getName() + " has no playable card. Drawing one...");
-        drawCard(currentPlayer);
-
-    } else {
-        // Player has a playable card
-        Card selectedCard = currentPlayer.selectCardToPlay(topCard);
-
-        // Validate the action before removing from the hand of current player
-        if (!validateAction(currentPlayer, selectedCard)) {
-            System.out.println("Action not allowed. Player must draw a card.");
-            currentPlayer.drawCard(deck); // draw a card
-
+        // The player wants to play a card
+        if (validateAction(player, cardToPlay)) {
+            player.removeFromHand(cardToPlay);
+            pileOfGame.push(cardToPlay);
+            System.out.println(player.getName() + " played: " + cardToPlay);
         } else {
-            // play the selected card
-            currentPlayer.removeCard(selectedCard);
-            pileOfGame.push(selectedCard);
-            System.out.println(currentPlayer.getName() + " played " + selectedCard);
+            System.out.println("Invalid move! Drawing a card instead.");
+            drawCard(player);
         }
     }
 }
 
 // determine how is the next player in the game and aplicate the effect of card
-
 public void playCard() {
-    Player currentPlayer = getcurrentplayer();
+    Player currentPlayer = getcurrentplayer(); // Get the current player
 
-    // call the play turn to play card or draw
+    // Handle the player's turn (play a card or draw a card)
     playTurn(currentPlayer);
 
     // Check if the current player has won the game
     if (checkWinner(currentPlayer)) {
         System.out.println("Congratulations! " + currentPlayer.getName() + " has won the game!");
-        System.exit(0); // game over
+        System.exit(0); // End the game
     }
 
-    // Apply the effect card after playing the card
+    // Apply the effect of the played card (if any)
     applyEffectCard(currentPlayer);
 }
+
+
+
+
+
+
 
 
 public void reverseEffect() {
@@ -487,16 +447,23 @@ public void draw2Effect(Player player, Deck deckGame) {
 public void wildEffect(Player player, Deck deckGame) {
 
     for (int i = 0; i < 4; i++) {
-        player.drawCard(deckGame);
+        player.drawCard(deckGame); }
+    
         System.out.println(player.getName() + " has drawn 4 cards!");
 
         // Allow the current player to choose a new color
         String newColor = choseColor();
         System.out.println("The color is now " + newColor + ".");
         // Set the new color on the top card
-        getTopCard().setColor(newColor);
-
-    }
+        //getTopCard().setColor(newColor);
+     // Set the new color on the top card
+        
+        Card topCard = getTopCard();
+        if (topCard != null) {
+            topCard.setColor(newColor);
+        } else {
+            System.out.println("Error: No top card available to set the color.");
+        }
 }
 
 public void skipEffect(Player player) {
@@ -507,39 +474,45 @@ public void skipEffect(Player player) {
 
 // check the validation of the card before adding it in the pile card game
 
-public boolean validateAction(Player player, Card card) {
-    // Get the top card on the pile
-    Card topCard = getTopCard();
 
-    // Check if the card is in the player's hand
-    if (player.hasNoCardsLeft()) {
+  public boolean validateAction(Player player, Card card) {
+	  
+    if (this.topCard == null) {
+        System.out.println("Warning: Top card is not set. Initializing...");
+        this.topCard = deck.drawingFromDeck(pileOfGame);
+        pileOfGame.push(topCard);
+    }
+
+    if (!player.getHand().contains(card)) {
         System.out.println("Invalid action: Card is not in the player's hand.");
         return false;
     }
 
-    // Check if the card is compatible with the top card
-    if (isMoveValid(card, topCard)) {
+    if (!isMoveValid(card, topCard)) {
         System.out.println("Invalid action: Card is not compatible with the top card.");
         return false;
     }
 
     return true;
 }
+ 
+
 
 public String choseColor() {
-    Scanner scanner = new Scanner(System.in);
-    System.out.println("Chose the new color to play  ");
-    String color = scanner.nextLine();
-
+    System.out.println("Choose a new color to play (Yellow, Red, Blue, Green):");
+      String color;
+    //Scanner scanner = new Scanner(System.in);
+   
+    
+    
     while (true) {
+        color = scanner.nextLine().trim();
         if (color.equalsIgnoreCase("Yellow") || color.equalsIgnoreCase("Red") ||
-                color.equalsIgnoreCase("Blue") || color.equalsIgnoreCase("Green")) {
-            scanner.close();
-            return color;
+            color.equalsIgnoreCase("Blue") || color.equalsIgnoreCase("Green")) {
+            return color; // Valid color entered
         } else {
-            System.out.println("Invalid color pleas try again chose : Yellow || Red || Green || Blue ");
+            System.out.println("Invalid color. Please try again: Yellow, Red, Blue, or Green.");
         }
-
     }
 }
 
