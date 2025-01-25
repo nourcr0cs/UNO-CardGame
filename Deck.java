@@ -1,9 +1,10 @@
-import java.util.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class Deck{
-
-    //attrib
+public class Deck {
+	 //attrib
     private List<Card> deck;
     String[] colors = {"Yellow", "Red", "Blue", "Green"};
 
@@ -25,24 +26,24 @@ public class Deck{
     public void initDeck() {
     //Colored Cards From 0 to 9
     for (int i = 0; i <= 9; i++) {
-    this.deck.add(new SimpleCard(Integer.toString(i), "Yellow"));
-    this.deck.add(new SimpleCard(Integer.toString(i), "Red"));
-    this.deck.add(new SimpleCard(Integer.toString(i), "Blue"));
-    this.deck.add(new SimpleCard(Integer.toString(i), "Green"));
+    this.deck.add(new Card.SimpleCard(Integer.toString(i), "Yellow"));
+    this.deck.add(new Card.SimpleCard(Integer.toString(i), "Red"));
+    this.deck.add(new Card.SimpleCard(Integer.toString(i), "Blue"));
+    this.deck.add(new Card.SimpleCard(Integer.toString(i), "Green"));
     }
 
     // because 0 should only be one per color we start from one (1-9 x2 per color)
     for (int i = 1; i <= 9; i++) {
-    this.deck.add(new SimpleCard(Integer.toString(i), "Yellow"));
-    this.deck.add(new SimpleCard(Integer.toString(i), "Red"));
-    this.deck.add(new SimpleCard(Integer.toString(i), "Blue"));
-    this.deck.add(new SimpleCard(Integer.toString(i), "Green"));
+    this.deck.add(new Card.SimpleCard(Integer.toString(i), "Yellow"));
+    this.deck.add(new Card.SimpleCard(Integer.toString(i), "Red"));
+    this.deck.add(new Card.SimpleCard(Integer.toString(i), "Blue"));
+    this.deck.add(new Card.SimpleCard(Integer.toString(i), "Green"));
 }
 
     // 4 cards for +4 et switch color
     for (int i = 0; i < 4; i++) {
-    this.deck.add(new Multi()); //change color card can be put anytime 
-    this.deck.add(new PlusFour());//+4 
+        this.deck.add(new Card.WildCard("multi")); // change color card
+        this.deck.add(new Card.WildCard("+4"));
 }
 
 
@@ -50,27 +51,31 @@ public class Deck{
     for (int i = 0; i < 4; i++) {
       String color;
       color = colors[i];
-      this.deck.add( new Reverse(color) );
-      this.deck.add( new Skip(color) );
-      this.deck.add( new PlusTwo(color) );
+      this.deck.add(new Card.SpecialCard("Reverse", color));
+      this.deck.add(new Card.SpecialCard("Skip", color));
+      this.deck.add(new Card.SpecialCard("+2", color));
     }
 
-  }
+}
 
 
     public void shuffleDeck() {
         Collections.shuffle(deck);
     }
+    
 
-    public boolean drawCard(Deck deck) {
+   
+   /* public Card drawCard(Deck deck) {
+    	
         if (!deck.isEmpty()) {
-            Card card = deck.drawingFromDeck();
-            this.hand.add(card); 
-            return true; 
+            Card card = deck.drawingFromDeck(); // Draw a card from the deck
+            player.addCard(card); // Add the card to the player's hand
+            return card; // Return the drawn card
         } else {
-            return false; 
+            return null; // Return null if the deck is empty
         }
     }
+*/
 
     public Card drawingFromDeck() {
         if (deck.isEmpty()) {
@@ -96,6 +101,8 @@ public class Deck{
             initDeck();        
             shuffleDeck();    
             }
-    }    
 
 
+    
+    
+}
